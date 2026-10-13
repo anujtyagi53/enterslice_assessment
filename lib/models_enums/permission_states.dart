@@ -2,9 +2,9 @@ enum PermissionStatus {
   checking,
   needsFine,
   finePermanentDenied,
+  needsNotifications,
   needsBackground,
   bgPermanentDenied,
-  needsNotifications,
   notifPermanentDenied,
   ready,
 }

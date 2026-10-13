@@ -34,6 +34,9 @@ class HomePage extends GetView<HomeController> {
   }
 
   Widget permission_views(BuildContext context) {
+    if (controller.permission_status.value == PermissionStatus.checking) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return switch (controller.permission_status.value) {
       PermissionStatus.checking => const Center(child: CircularProgressIndicator()),
       PermissionStatus.needsFine => permission_Card(
@@ -43,7 +46,7 @@ class HomePage extends GetView<HomeController> {
         message: 'App need precise location access to track your position.',
         buttonLabel: 'Grant Permission',
         onTap: controller.requestFineLocation,
-        isPermanent: false,
+        iconColor: AppColors.primary,
       ),
       PermissionStatus.finePermanentDenied => permission_Card(
         context,
@@ -52,7 +55,7 @@ class HomePage extends GetView<HomeController> {
         message: 'Please enable location permission from app settings.',
         buttonLabel: 'Open Settings',
         onTap: controller.open_settings,
-        isPermanent: true,
+        iconColor: AppColors.danger,
       ),
       PermissionStatus.needsBackground => permission_Card(
         context,
@@ -61,7 +64,7 @@ class HomePage extends GetView<HomeController> {
         message: 'Select "Allow all the time" in the next screen for background tracking.',
         buttonLabel: 'Allow Background Location',
         onTap: controller.request_backgroundLocation,
-        isPermanent: false,
+        iconColor: AppColors.primary,
       ),
       PermissionStatus.bgPermanentDenied => permission_Card(
         context,
@@ -70,7 +73,8 @@ class HomePage extends GetView<HomeController> {
         message: 'Enable "Allow all the time" for location in app settings.',
         buttonLabel: 'Open Settings',
         onTap: controller.open_settings,
-        isPermanent: true,
+
+        iconColor: AppColors.danger,
       ),
       PermissionStatus.needsNotifications => permission_Card(
         context,
@@ -79,7 +83,8 @@ class HomePage extends GetView<HomeController> {
         message: 'Allow notifications so the tracker can show live location updates in the status bar.',
         buttonLabel: 'Allow Notifications',
         onTap: controller.request_notifications,
-        isPermanent: false,
+
+        iconColor: AppColors.primary,
       ),
       PermissionStatus.notifPermanentDenied => permission_Card(
         context,
@@ -88,7 +93,7 @@ class HomePage extends GetView<HomeController> {
         message: 'Enable notification permission from app settings.',
         buttonLabel: 'Open Settings',
         onTap: controller.open_settings,
-        isPermanent: true,
+        iconColor: AppColors.danger,
       ),
       PermissionStatus.ready => main_view(),
     };
@@ -101,7 +106,7 @@ class HomePage extends GetView<HomeController> {
     required String message,
     required String buttonLabel,
     required VoidCallback onTap,
-    required bool isPermanent,
+    required Color iconColor,
   }) {
     return Center(
       child: Padding(
@@ -114,7 +119,8 @@ class HomePage extends GetView<HomeController> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(icon, size: 64, color: isPermanent ? AppColors.danger : AppColors.primary),
+                // Icon(icon, size: 64, color: isPermanent ? AppColors.danger : AppColors.primary),
+                Icon(icon, size: 64, color: iconColor),
                 const SizedBox(height: 20),
                 Text(
                   title,

@@ -144,7 +144,7 @@ class MainActivity : FlutterActivity() {
     grantResults: IntArray
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    if (requestCode !in listOf(reqFine, reqBackground, reqNotification)) return
+    if (requestCode !in setOf(reqFine, reqBackground, reqNotification)) return
     val granted = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
     val canAskAgain =
       permissions.isNotEmpty() && shouldShowRequestPermissionRationale(permissions[0])
@@ -155,26 +155,17 @@ class MainActivity : FlutterActivity() {
   }
 
   private fun currentPermissionState(): Map<String, Boolean> {
-    val fineGranted = ContextCompat.checkSelfPermission(
-      this,
-      Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
-    val bgGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-      ContextCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_BACKGROUND_LOCATION
-      ) == PackageManager.PERMISSION_GRANTED
+    val hasFine = ContextCompat.checkSelfPermission(...ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+    val allowBg = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+      ContextCompat.checkSelfPermission(...ACCESS_BACKGROUND_LOCATION) == PackageManager.PERMISSION_GRANTED
     } else true
-    val notifGranted = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-      ContextCompat.checkSelfPermission(
-        this,
-        Manifest.permission.POST_NOTIFICATIONS
-      ) == PackageManager.PERMISSION_GRANTED
+    val canNotify = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+      ContextCompat.checkSelfPermission(...POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
     } else true
     return mapOf(
-      "fineLocation" to fineGranted,
-      "backgroundLocation" to bgGranted,
-      "notifications" to notifGranted
+      "fineLocation" to hasFine,
+      "backgroundLocation" to allowBg,
+      "notifications" to canNotify
     )
   }
 }
